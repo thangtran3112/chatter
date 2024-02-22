@@ -9,7 +9,7 @@ interface LoginRequest {
 
 /**Custom hook to return login() callback and error state */
 const useLogin = () => {
-  const [error, setError] = useState<boolean>(false);
+  const [error, setError] = useState<string>();
   const login = async (request: LoginRequest) => {
     const res = await fetch(`${API_URL}/auth/login`, {
       method: 'POST',
@@ -21,10 +21,14 @@ const useLogin = () => {
 
     //non-2xx status
     if (!res.ok) {
-      setError(true);
+      if (res.status === 401) {
+        setError('Credentials are not valid.');
+      } else {
+        setError('Unknown error occured.');
+      }
       return;
     }
-    setError(false);
+    setError('');
 
     //clear all caches and queries. Apollo Client auto cache request and response
     await client.refetchQueries({ include: 'active' });
