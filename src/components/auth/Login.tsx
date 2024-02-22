@@ -9,7 +9,7 @@ const Login = () => {
   return (
     <Auth
       submitLabel="Login"
-      error={error ? 'Credentials are not valid' : ''}
+      error={error}
       onSubmit={(request) => login(request)}
     >
       <Link to={'/signup'} style={{ alignSelf: 'center' }}>

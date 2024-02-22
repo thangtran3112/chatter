@@ -4,6 +4,7 @@ import { Link as MUILink } from '@mui/material';
 import Auth from './Auth';
 import { useCreateUser } from '../../hooks/useCreateUser';
 import { useState } from 'react';
+import { extractErrorMessage } from '../../utils/errors';
 
 const Signup = () => {
   const [createUser] = useCreateUser();
@@ -12,6 +13,7 @@ const Signup = () => {
   return (
     <Auth
       submitLabel="Signup"
+      error={error}
       onSubmit={async ({ email, password }) => {
         try {
           await createUser({
@@ -22,9 +24,15 @@ const Signup = () => {
               },
             },
           });
+          setError('');
         } catch (err) {
-          console.log(err);
-          throw err;
+          //console.log(err);
+          const errorMessage = extractErrorMessage(err);
+          if (errorMessage) {
+            setError(errorMessage);
+            return;
+          }
+          setError('Unknown error occured.');
         }
       }}
     >
