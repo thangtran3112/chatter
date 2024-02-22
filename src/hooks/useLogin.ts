@@ -30,7 +30,7 @@ const useLogin = () => {
     }
     setError('');
 
-    //clear all caches and queries. Apollo Client auto cache request and response
+    //clear all caches and refetch all queries. Apollo Client auto cache request and response
     await client.refetchQueries({ include: 'active' });
   };
 
