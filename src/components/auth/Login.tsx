@@ -7,7 +7,11 @@ import { useLogin } from '../../hooks/useLogin';
 const Login = () => {
   const { login, error } = useLogin();
   return (
-    <Auth submitLabel="Login" onSubmit={(request) => login(request)}>
+    <Auth
+      submitLabel="Login"
+      error={error ? 'Credentials are not valid' : ''}
+      onSubmit={(request) => login(request)}
+    >
       <Link to={'/signup'} style={{ alignSelf: 'center' }}>
         <MUILink>Signup</MUILink>
       </Link>
