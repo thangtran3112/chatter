@@ -1,5 +1,7 @@
 import { Button, Stack, TextField } from '@mui/material';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useGetMe } from '../../hooks/useGetMe';
+import { useNavigate } from 'react-router-dom';
 
 interface AuthProps {
   submitLabel: string;
@@ -11,6 +13,18 @@ interface AuthProps {
 const Auth = ({ submitLabel, onSubmit, children, error }: AuthProps) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
+  //in useLogin() we are calling client.refetchQueries(), which would force all queries to get refetched
+  //which would trigger the change of authenticated user from useGetMe()
+  const { data: currentUser } = useGetMe();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (currentUser) {
+      //if data presents, we have an authenticated user in this Context. Browser is in Authenticated state
+      navigate('/');
+    }
+  }, [currentUser, navigate]);
   return (
     <Stack
       spacing={3}
