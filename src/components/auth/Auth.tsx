@@ -5,9 +5,10 @@ interface AuthProps {
   submitLabel: string;
   onSubmit: (credentials: { email: string; password: string }) => Promise<void>;
   children: React.ReactNode;
+  error?: string;
 }
 
-const Auth = ({ submitLabel, onSubmit, children }: AuthProps) => {
+const Auth = ({ submitLabel, onSubmit, children, error }: AuthProps) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   return (
@@ -29,12 +30,16 @@ const Auth = ({ submitLabel, onSubmit, children }: AuthProps) => {
         variant="outlined"
         value={email}
         onChange={(event) => setEmail(event.target.value)}
+        error={!!error} //directly convert error from string to boolean (when it is empty, null, undefined)
+        helperText={error}
       />
       <TextField
         type="password"
         label="password"
         variant="outlined"
         value={password}
+        error={!!error} //directly convert error from string to boolean (when it is empty, null, undefined)
+        helperText={error}
         onChange={(event) => setPassword(event.target.value)}
       />
       <Button variant="contained" onClick={() => onSubmit({ email, password })}>
