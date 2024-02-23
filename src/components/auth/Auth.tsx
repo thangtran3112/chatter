@@ -32,7 +32,7 @@ const Auth = ({ submitLabel, onSubmit, children, error }: AuthProps) => {
         height: '100vh',
         maxWidth: {
           xs: '70%',
-          md: '30%',
+          md: '35%',
         },
         margin: '0 auto',
         justifyContent: 'center',
