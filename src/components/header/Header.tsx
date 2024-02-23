@@ -1,16 +1,15 @@
-import * as React from 'react';
-import AppBar from '@mui/material/AppBar';
-import Toolbar from '@mui/material/Toolbar';
-import Container from '@mui/material/Container';
-import Branding from './Branding';
-import MobileNavigation from './mobile/MobileNavigation';
-import MobileBranding from './mobile/MobileBranding';
-import Navigation from './Navigation';
-import Settings from './Settings';
+import * as React from "react";
+import AppBar from "@mui/material/AppBar";
+import Toolbar from "@mui/material/Toolbar";
+import Container from "@mui/material/Container";
+import Branding from "./Branding";
+import MobileNavigation from "./mobile/MobileNavigation";
+import MobileBranding from "./mobile/MobileBranding";
+import Navigation from "./Navigation";
+import Settings from "./Settings";
 
 const pages: string[] = [];
 
-/**This code was originated from https://mui.com/material-ui/react-app-bar */
 const Header = () => {
   return (
     <AppBar position="static">
