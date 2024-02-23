@@ -1,5 +1,5 @@
-import { gql, useMutation } from '@apollo/client';
-import { User } from '../models/User';
+import { gql, useMutation } from "@apollo/client";
+import { User } from "../models/User";
 
 interface CreateUserInput {
   createUserInput: {
@@ -17,7 +17,6 @@ const CREATE_USER = gql`
   }
 `;
 
-//auto using the client={client} in ApolloProvider
 const useCreateUser = () => {
   return useMutation<User, CreateUserInput>(CREATE_USER);
 };
