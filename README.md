@@ -16,3 +16,9 @@ https://dev.to/quizzes4u/how-to-set-up-eslint-and-prettier-in-react-typescript-5
 `nest new chatter-backend`
 
 ## Install GraphQL VSCode pluggin for Syntax highlight
+
+## Apollo Client provides us with a way to maintain Global authenticated state
+
+## Material UI libraries
+* https://mui.com/material-ui/react-snackbar/
+* https://mui.com/material-ui/app-bar/
