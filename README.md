@@ -20,5 +20,9 @@ https://dev.to/quizzes4u/how-to-set-up-eslint-and-prettier-in-react-typescript-5
 ## Apollo Client provides us with a way to maintain Global authenticated state
 
 ## Material UI libraries
-* https://mui.com/material-ui/react-snackbar/
-* https://mui.com/material-ui/app-bar/
+
+- https://mui.com/material-ui/react-snackbar/
+- https://mui.com/material-ui/app-bar/
+- https://mui.com/material-ui/react-list/
+- https://mui.com/material-ui/react-grid/
+- https://mui.com/material-ui/api/toolbar/
