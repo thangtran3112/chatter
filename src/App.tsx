@@ -13,6 +13,7 @@ import Guard from './components/auth/Guard';
 import Header from './components/header/Header';
 import Snackbar from './components/snackbar/Snackbar';
 import ChatList from './components/chat-list/ChatList';
+import { usePath } from './hooks/usePath';
 
 const darkTheme = createTheme({
   palette: {
@@ -21,29 +22,40 @@ const darkTheme = createTheme({
 });
 
 const App = () => {
+  const { path } = usePath();
+
   return (
     <ApolloProvider client={client}>
       <ThemeProvider theme={darkTheme}>
         <CssBaseline />
         <Header />
-        <Grid container>
-          {/* 3 collumns from medium break points */}
-          <Grid item md={3}>
-            <ChatList />
-          </Grid>
-          {/* 9 collumns from medium break points */}
-          <Grid item md={9}>
-            <Container>
-              <Guard>
-                <RouterProvider router={router} />
-              </Guard>
-            </Container>
-          </Grid>
-        </Grid>
-
+        <Guard>
+          {path === '/' ? (
+            <Grid container>
+              {/* 3 collumns from medium break points */}
+              <Grid item md={3}>
+                <ChatList />
+              </Grid>
+              {/* 9 collumns from medium break points */}
+              <Grid item md={9}>
+                <Routes />
+              </Grid>
+            </Grid>
+          ) : (
+            <Routes />
+          )}
+        </Guard>
         <Snackbar />
       </ThemeProvider>
     </ApolloProvider>
+  );
+};
+
+const Routes = () => {
+  return (
+    <Container>
+      <RouterProvider router={router} />
+    </Container>
   );
 };
 
