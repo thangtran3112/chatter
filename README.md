@@ -21,8 +21,19 @@ https://dev.to/quizzes4u/how-to-set-up-eslint-and-prettier-in-react-typescript-5
 
 ## Material UI libraries
 
-- https://mui.com/material-ui/react-snackbar/
-- https://mui.com/material-ui/app-bar/
-- https://mui.com/material-ui/react-list/
-- https://mui.com/material-ui/react-grid/
-- https://mui.com/material-ui/api/toolbar/
+- [Snackbar](https://mui.com/material-ui/react-snackbar/)
+- [AppBar](https://mui.com/material-ui/app-bar/)
+- [List](https://mui.com/material-ui/react-list/)
+- [Divider](https://mui.com/material-ui/react-divider/)
+- [Grid](https://mui.com/material-ui/react-grid/)
+- [Toolbar Api](https://mui.com/material-ui/api/toolbar/)
+- [Typography](https://mui.com/material-ui/react-typography/)
+- [Modal](https://mui.com/material-ui/react-modal/)
+- [Switch](https://mui.com/material-ui/react-switch/) with [FormGroup](https://mui.com/material-ui/api/form-group/)
+- [Stack](https://mui.com/material-ui/react-stack/)
+- [CSSBaseline](https://mui.com/material-ui/react-css-baseline/)
+- [Material Icons](https://mui.com/material-ui/material-icons/)
+- [Container](https://mui.com/material-ui/react-container/)
+- [Box](https://mui.com/material-ui/react-box/)
+- [IconButton](https://mui.com/material-ui/api/icon-button/)
+- [TextField and InputBase](https://mui.com/material-ui/react-text-field/)
