@@ -38,8 +38,19 @@ https://dev.to/quizzes4u/how-to-set-up-eslint-and-prettier-in-react-typescript-5
 
 - `@graphql-codegen/cli` and `@parcel/watcher`. [Instructions](https://the-guild.dev/graphql/codegen/docs/getting-started/installation)
 
-`npm i -D typescript @graphql-codegen/cli @parcel/watcher`
+`npm i -D @graphql-codegen/cli @parcel/watcher`
 `npx run graphql-code-generator init`
+`npm run codegen`
+
+- Using `concurrently` in package.json to start web server along with watching codegen together:
+
+`npm i -D concurrently`
+
+```
+"scripts": {
+    "start": "concurrently \"react-scripts start\" \"npm run codegen --watch\"",
+}
+```
 
 - [GraphQL Syntax Highlight VS Code](https://marketplace.visualstudio.com/items?itemName=GraphQL.vscode-graphql-syntax)
 
