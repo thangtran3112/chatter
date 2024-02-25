@@ -54,6 +54,7 @@ https://dev.to/quizzes4u/how-to-set-up-eslint-and-prettier-in-react-typescript-5
 
 - [GraphQL Syntax Highlight VS Code](https://marketplace.visualstudio.com/items?itemName=GraphQL.vscode-graphql-syntax)
 
-## Apollo Client provides us with a way to maintain Global authenticated state
+## Apollo Client Usages
 
 - [useReactiveVar() hook and makeVar()](https://www.apollographql.com/docs/react/local-state/reactive-variables/)
+- Mutation will not trigger cache update on non-primitive response. We can either use `refetchQueries` or `update` cache on successful mutation. [Instructions](https://www.apollographql.com/docs/react/data/mutations/)
