@@ -15,10 +15,6 @@ https://dev.to/quizzes4u/how-to-set-up-eslint-and-prettier-in-react-typescript-5
 `npm i -g @nestjs/cli@latest`
 `nest new chatter-backend`
 
-## Install GraphQL VSCode pluggin for Syntax highlight
-
-## Apollo Client provides us with a way to maintain Global authenticated state
-
 ## Material UI libraries
 
 - [Snackbar](https://mui.com/material-ui/react-snackbar/)
@@ -37,3 +33,16 @@ https://dev.to/quizzes4u/how-to-set-up-eslint-and-prettier-in-react-typescript-5
 - [Box](https://mui.com/material-ui/react-box/)
 - [IconButton](https://mui.com/material-ui/api/icon-button/)
 - [TextField and InputBase](https://mui.com/material-ui/react-text-field/)
+
+## Install GraphQL Codegen libraries
+
+- `@graphql-codegen/cli` and `@parcel/watcher`. [Instructions](https://the-guild.dev/graphql/codegen/docs/getting-started/installation)
+
+`npm i -D typescript @graphql-codegen/cli @parcel/watcher`
+`npx run graphql-code-generator init`
+
+- [GraphQL Syntax Highlight VS Code](https://marketplace.visualstudio.com/items?itemName=GraphQL.vscode-graphql-syntax)
+
+## Apollo Client provides us with a way to maintain Global authenticated state
+
+- [useReactiveVar() hook and makeVar()](https://www.apollographql.com/docs/react/local-state/reactive-variables/)
