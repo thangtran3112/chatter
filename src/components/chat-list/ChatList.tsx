@@ -30,7 +30,7 @@ export default function ChatList() {
           }}
         >
           {data?.chats.map((chat) => (
-            <ChatListItem name={chat.name} key={chat.name} />
+            <ChatListItem chat={chat} key={chat._id} />
           ))}
         </List>
       </Stack>
