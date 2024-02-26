@@ -33,6 +33,7 @@ https://dev.to/quizzes4u/how-to-set-up-eslint-and-prettier-in-react-typescript-5
 - [Box](https://mui.com/material-ui/react-box/)
 - [IconButton](https://mui.com/material-ui/api/icon-button/)
 - [TextField and InputBase](https://mui.com/material-ui/react-text-field/)
+- [Paper](https://mui.com/material-ui/react-paper/)
 
 ## Install GraphQL Codegen libraries
 
