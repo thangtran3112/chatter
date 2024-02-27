@@ -38,7 +38,7 @@ export default function ChatList() {
         <List
           sx={{
             width: '100%',
-            maxWidth: 360,
+            // maxWidth: 360,
             bgcolor: 'background.paper',
             maxHeight: '80vh', // % of view height screen
             overflow: 'auto', //scrollable through the overflow list
