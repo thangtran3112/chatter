@@ -61,11 +61,11 @@ const chat = () => {
             marginBottom="1rem"
           >
             {/* Using 3 collumns for small screen, 1 collumn for medium screen */}
-            <Grid item xs={3} md={1}>
+            <Grid item xs={2} lg={1}>
               <Avatar src="" sx={{ width: 52, height: 52 }}></Avatar>
             </Grid>
 
-            <Grid item xs={9} md={11}>
+            <Grid item xs={10} lg={11}>
               <Stack>
                 {/* Using <Paper> to hold Chat content for some elevation */}
                 <Paper sx={{ width: 'fit-content' }}>
@@ -90,6 +90,7 @@ const chat = () => {
           justifySelf: 'flex-end', //message bar to be sticked to the bottom of the container
           alignItems: 'center',
           width: '100%',
+          margin: '1rem 0',
         }}
       >
         <InputBase
