@@ -18,7 +18,7 @@ const chat = () => {
   const [message, setMessage] = useState('');
   const chatId = params._id!;
   const { data } = useGetChat({ _id: chatId });
-  const [createMessage] = useCreateMessage();
+  const [createMessage] = useCreateMessage(chatId);
   const { data: getMessagesData } = useGetMessages({ chatId });
 
   return (
