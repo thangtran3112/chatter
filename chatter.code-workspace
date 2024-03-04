@@ -1,11 +1,11 @@
 {
-	"folders": [
-		{
-			"path": "../chatter-backend"
-		},
-		{
-			"path": "."
-		}
-	],
-	"settings": {}
+  "folders": [
+    {
+      "path": "./chatter-backend"
+    },
+    {
+      "path": "."
+    }
+  ],
+  "settings": {}
 }
