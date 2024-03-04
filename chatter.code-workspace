@@ -4,8 +4,7 @@
       "path": "./chatter-backend"
     },
     {
-      "path": "."
+      "path": "./chatter-ui"
     }
-  ],
-  "settings": {}
+  ]
 }
