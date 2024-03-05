@@ -15,6 +15,7 @@ import SendIcon from '@mui/icons-material/Send';
 import { useCreateMessage } from '../../hooks/useCreateMessage';
 import { useEffect, useRef, useState } from 'react';
 import { useGetMessages } from '../../hooks/useGetMessages';
+import { useMessageCreated } from '../../hooks/useMessageCreated';
 
 const chat = () => {
   const params = useParams();
@@ -25,6 +26,9 @@ const chat = () => {
   const { data: getMessagesData } = useGetMessages({ chatId });
   const divRef = useRef<HTMLDivElement | null>(null);
   const location = useLocation();
+  const { data: latestMessage } = useMessageCreated({ chatId });
+
+  console.log(latestMessage);
 
   const scrollToBottom = () => divRef.current?.scrollIntoView();
   //whenever we Load a Chat, the Url will change with the new ChatId,
