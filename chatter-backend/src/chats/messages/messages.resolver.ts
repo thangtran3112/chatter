@@ -37,17 +37,35 @@ export class MessagesResolver {
     return this.messagesService.getMessages(getMessagesArgs, user._id);
   }
 
+  /**
+   *
+   * @param variables (variables {chatId} is sent from the UI to subscribe to a Chat room)
+   * @param payload is the incomming message that needs to be filter to send to subscribers
+   * @param context which we extract the user from JWT token. See app.module.ts => GraphQLModule
+   */
   @Subscription(() => Message, {
     //filter for corresponding messages
-    filter: (payload, variables) => {
+    filter: (payload, variables, context) => {
+      //subscriber userId, when the websocket connection is initialized
+      //Reference: onConnect() in GraphQLModule from app.module.ts
+      const subscriberUserId = context.req.user._id;
+      const senderUserId = payload.messageCreated.userId;
+      const isSubscriberNotSender = subscriberUserId !== senderUserId;
+
       //incoming message (payload.message) to be compared with the subscription chatId
       //this API will be called by UI client with { chatId } to subscribe to the topic
-      return payload.messageCreated.chatId === variables.chatId;
+      return (
+        payload.messageCreated.chatId === variables.chatId &&
+        isSubscriberNotSender
+      );
     },
   })
-  messageCreated(@Args() _messageCreatedArgs: MessageCreatedArgs) {
-    //topic name for this specific message type
-    //which message go to which subscription by the trigger name
-    return this.pubSub.asyncIterator(MESSAGE_CREATED_TOPIC);
+  messageCreated(
+    @Args() messageCreatedArgs: MessageCreatedArgs,
+    //passing from getCurrentUserByContext() in current-user.decorator.ts,
+    //and modified by onConnect() in GraphQLModule of app.module.ts
+    @CurrentUser() user: TokenPayload,
+  ) {
+    return this.messagesService.messageCreated(messageCreatedArgs, user._id);
   }
 }
