@@ -22,22 +22,34 @@ const chat = () => {
   const [message, setMessage] = useState('');
   const chatId = params._id!;
   const { data } = useGetChat({ _id: chatId });
-  const [createMessage] = useCreateMessage(chatId);
-  const { data: getMessagesData } = useGetMessages({ chatId });
+  const [createMessage] = useCreateMessage();
+  const { data: allMessages } = useGetMessages({ chatId });
   const divRef = useRef<HTMLDivElement | null>(null);
   const location = useLocation();
-  const { data: latestMessage } = useMessageCreated({ chatId });
 
-  console.log(latestMessage);
+  useMessageCreated({ chatId });
+
+  // console.log(latestMessage);
 
   const scrollToBottom = () => divRef.current?.scrollIntoView();
+
+  /**
+   * Since we are updating the cache directly on src/cache/message.ts,
+   * This useEffect will become redundant
+   * */
+  /*useEffect(() => {
+    if (existingMessages) {
+      setMessages(existingMessages.messages);
+    }
+  }, [existingMessages]);*/
+
   //whenever we Load a Chat, the Url will change with the new ChatId,
   //or when the messages list are changed (someone send us a message)
   //we want to scroll down to the bottom, to see the latest message
   useEffect(() => {
     setMessage('');
     scrollToBottom();
-  }, [location, getMessagesData]);
+  }, [location, allMessages]);
 
   const handleSendMessage = async () => {
     await createMessage({
@@ -57,34 +69,44 @@ const chat = () => {
       <h1>{data?.chat.name}</h1>
       {/* The Chat will have 70/100 view height, and scrollable if overflow */}
       <Box sx={{ maxHeight: '70vh', overflow: 'auto' }}>
-        {getMessagesData?.messages.map((message) => (
-          <Grid
-            key={message._id}
-            container
-            alignItems="center"
-            marginBottom="1rem"
-          >
-            {/* Using 3 collumns for small screen, 1 collumn for medium screen */}
-            <Grid item xs={2} lg={1}>
-              <Avatar src="" sx={{ width: 52, height: 52 }}></Avatar>
-            </Grid>
+        {allMessages &&
+          [...allMessages.messages]
+            .sort(
+              (messageA, messageB) =>
+                new Date(messageA.createdAt).getTime() -
+                new Date(messageB.createdAt).getTime(),
+            ) //sorting all messages based on timestamp
+            .map((curMessage) => (
+              <Grid
+                key={curMessage._id}
+                container
+                alignItems="center"
+                marginBottom="1rem"
+              >
+                {/* Using 3 collumns for small screen, 1 collumn for medium screen */}
+                <Grid item xs={2} lg={1}>
+                  <Avatar src="" sx={{ width: 52, height: 52 }}></Avatar>
+                </Grid>
 
-            <Grid item xs={10} lg={11}>
-              <Stack>
-                {/* Using <Paper> to hold Chat content for some elevation */}
-                <Paper sx={{ width: 'fit-content' }}>
-                  <Typography sx={{ padding: '0.9rem' }}>
-                    {message.content}
-                  </Typography>
-                </Paper>
-                {/* Timestamp */}
-                <Typography variant="caption" sx={{ marginLeft: '0.25rem' }}>
-                  {new Date(message.createdAt).toLocaleTimeString()}
-                </Typography>
-              </Stack>
-            </Grid>
-          </Grid>
-        ))}
+                <Grid item xs={10} lg={11}>
+                  <Stack>
+                    {/* Using <Paper> to hold Chat content for some elevation */}
+                    <Paper sx={{ width: 'fit-content' }}>
+                      <Typography sx={{ padding: '0.9rem' }}>
+                        {curMessage.content}
+                      </Typography>
+                    </Paper>
+                    {/* Timestamp */}
+                    <Typography
+                      variant="caption"
+                      sx={{ marginLeft: '0.25rem' }}
+                    >
+                      {new Date(curMessage.createdAt).toLocaleTimeString()}
+                    </Typography>
+                  </Stack>
+                </Grid>
+              </Grid>
+            ))}
         <div ref={divRef}></div>
       </Box>
       <Paper
