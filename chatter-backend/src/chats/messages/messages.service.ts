@@ -7,11 +7,14 @@ import { GetMessagesArgs } from './dto/get-messages.args';
 import { PUB_SUB } from 'src/common/constants/injection-tokens';
 import { PubSub } from 'graphql-subscriptions';
 import { MESSAGE_CREATED_TOPIC } from './constants/pubsub';
+import { MessageCreatedArgs } from './dto/message-created.args';
+import { ChatsService } from '../chats.service';
 
 @Injectable()
 export class MessagesService {
   constructor(
     private readonly chatsRepository: ChatsRepository,
+    private readonly chatsService: ChatsService,
     @Inject(PUB_SUB) private readonly pubSub: PubSub,
   ) {}
 
@@ -28,7 +31,7 @@ export class MessagesService {
     await this.chatsRepository.findOneAndUpdate(
       {
         _id: chatId,
-        ...this.userChatFilter(userId),
+        ...this.chatsService.userChatFilter(userId),
       }, //this filtering Query will help find the right Chat, for updating the new message
       {
         $push: {
@@ -46,25 +49,24 @@ export class MessagesService {
     return message;
   }
 
-  private userChatFilter(userId: string) {
-    return {
-      $or: [
-        { userId }, //if the message is created by the owner of the Chat (matching by userId)
-        {
-          userIds: {
-            $in: [userId], //if the userIds array of the Chat, contains the current message's userId
-          },
-        },
-      ],
-    };
-  }
-
   async getMessages({ chatId }: GetMessagesArgs, userId: string) {
     const myChat = await this.chatsRepository.findOne({
       _id: chatId,
-      ...this.userChatFilter(userId),
+      ...this.chatsService.userChatFilter(userId),
     });
 
     return myChat.messages || [];
+  }
+
+  async messageCreated({ chatId }: MessageCreatedArgs, userId: string) {
+    // this command will throw a (404) NotFoundException in findOne() method, if the Chat
+    // room with chatId is not belong to the userId from the context
+    await this.chatsRepository.findOne({
+      _id: chatId,
+      ...this.chatsService.userChatFilter(userId),
+    });
+    //topic name for this specific message type
+    //which message go to which subscription by the trigger name
+    return this.pubSub.asyncIterator(MESSAGE_CREATED_TOPIC);
   }
 }

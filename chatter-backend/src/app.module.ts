@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Logger, Module, UnauthorizedException } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -11,6 +11,7 @@ import { LoggerModule } from 'nestjs-pino';
 import { AuthModule } from './auth/auth.module';
 import { ChatsModule } from './chats/chats.module';
 import { PubSubModule } from './common/pubsub/pubsub.module';
+import { AuthService } from './auth/auth.service';
 
 @Module({
   imports: [
@@ -20,12 +21,28 @@ import { PubSubModule } from './common/pubsub/pubsub.module';
         MONGODB_URI: Joi.string().required(),
       }),
     }),
-    GraphQLModule.forRoot<ApolloDriverConfig>({
+    //start webstocket server automatically, listening on /graphql
+    GraphQLModule.forRootAsync<ApolloDriverConfig>({
       driver: ApolloDriver,
-      autoSchemaFile: 'src/schema.gql',
-      subscriptions: {
-        'graphql-ws': true, //start webstocket server automatically, listening on /graphql
-      },
+      useFactory: (authService: AuthService) => ({
+        autoSchemaFile: 'src/schema.gql',
+        subscriptions: {
+          'graphql-ws': {
+            onConnect: (context: any) => {
+              try {
+                const incomingRequest = context.extra.request;
+                const user = authService.verifyWs(incomingRequest);
+                context.user = user;
+              } catch (err) {
+                new Logger().error(err);
+                throw new UnauthorizedException();
+              }
+            },
+          },
+        },
+      }),
+      imports: [AuthModule],
+      inject: [AuthService],
     }),
     DatabaseModule,
     UsersModule,

@@ -1,9 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import { User } from 'src/users/entities/user.entity';
 import { TokenPayload } from './token-payload.interface';
 import { JwtService } from '@nestjs/jwt';
+
+export const COOKIE_AUTHENTICATION = 'Authentication';
 
 @Injectable()
 export class AuthService {
@@ -25,15 +27,26 @@ export class AuthService {
     };
 
     const token = this.jwtService.sign(tokenPayload);
-    response.cookie('Authentication', token, {
+    response.cookie(COOKIE_AUTHENTICATION, token, {
       httpOnly: true,
       expires,
     });
   }
 
+  verifyWs(request: Request): TokenPayload {
+    const cookies: string[] = request.headers.cookie.split('; ');
+
+    // Authentication=ey...
+    const authCookie = cookies.find((cookie) =>
+      cookie.includes(COOKIE_AUTHENTICATION),
+    );
+    const jwt = authCookie.split(`${COOKIE_AUTHENTICATION}=`)[1];
+    return this.jwtService.verify(jwt);
+  }
+
   //simply clear the existing cookies on logout
   logout(response: Response) {
-    response.cookie('Authentication', '', {
+    response.cookie(COOKIE_AUTHENTICATION, '', {
       httpOnly: true,
       // expire the cookie immediately, and the cookie is clear from user session
       expires: new Date(),

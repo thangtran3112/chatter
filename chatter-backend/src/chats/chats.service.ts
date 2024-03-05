@@ -16,8 +16,8 @@ export class ChatsService {
     });
   }
 
-  async findAll() {
-    return this.chatsRepository.find({});
+  async findAll(userId: string) {
+    return this.chatsRepository.find({ ...this.userChatFilter(userId) });
   }
 
   async findOne(_id: string) {
@@ -30,5 +30,27 @@ export class ChatsService {
 
   async remove(id: number) {
     return `This action removes a #${id} chat`;
+  }
+
+  /**
+   * MongoDB Filter query to check if an userId is:
+   * 1. The owner of the chatroom
+   * 2. A Partiticipant in userIds array
+   * 3. If the chatroom is public, the message is for everyone
+   */
+  userChatFilter(userId: string) {
+    return {
+      $or: [
+        { userId }, //if the message is created by the owner of the Chat (matching by userId)
+        {
+          userIds: {
+            $in: [userId], //if the userIds array of the Chat, contains the current message's userId
+          },
+        },
+        {
+          isPrivate: false, //if the Chat room is Public, any user can see it
+        },
+      ],
+    };
   }
 }
