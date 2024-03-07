@@ -2,10 +2,11 @@ import { Module, forwardRef } from '@nestjs/common';
 import { MessagesService } from './messages.service';
 import { MessagesResolver } from './messages.resolver';
 import { ChatsModule } from '../chats.module';
+import { UsersModule } from 'src/users/users.module';
 
 @Module({
   //forwarRef is used to avoid circular dependency
-  imports: [forwardRef(() => ChatsModule)],
+  imports: [forwardRef(() => ChatsModule), UsersModule],
   providers: [MessagesResolver, MessagesService],
 })
 export class MessagesModule {}
