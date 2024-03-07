@@ -20,3 +20,4 @@
 ## Frontend tech stacks:
 
 - Material UI `@mui/material`, Apollo Client with Caching, Emotion react
+- WebSocket with GraphQL subscription API
