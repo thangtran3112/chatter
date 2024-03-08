@@ -1,9 +1,9 @@
 import ListItem from '@mui/material/ListItem';
+import Divider from '@mui/material/Divider';
 import ListItemText from '@mui/material/ListItemText';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
 import Avatar from '@mui/material/Avatar';
 import Typography from '@mui/material/Typography';
-import Divider from '@mui/material/Divider';
 import { ListItemButton } from '@mui/material';
 import router from '../../Routes';
 import { Chat } from '../../../gql/graphql';
@@ -22,7 +22,7 @@ const ChatListItem = ({ chat, selected }: ChatListProps) => {
           selected={selected}
         >
           <ListItemAvatar>
-            <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
+            <Avatar alt="Remy Sharp" src="/static/iamages/avatar/1.jpg" />
           </ListItemAvatar>
           <ListItemText
             primary={chat.name}
@@ -34,9 +34,9 @@ const ChatListItem = ({ chat, selected }: ChatListProps) => {
                   variant="body2"
                   color="text.primary"
                 >
-                  Ali Connors
+                  {chat.latestMessage?.user.username || ''}
                 </Typography>
-                {" — I'll be in your neighborhood doing errands this…"}
+                {' ' + (chat.latestMessage?.content || '')}
               </>
             }
           />

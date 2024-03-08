@@ -23,7 +23,7 @@ export class ChatsService {
       { $unset: 'messages' }, //get rid of all messages
       {
         $lookup: {
-          from: 'user',
+          from: 'users',
           localField: 'latestMessage.userId',
           foreignField: '_id',
           as: 'latestMessage.user',
