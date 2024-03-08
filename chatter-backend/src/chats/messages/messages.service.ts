@@ -74,15 +74,7 @@ export class MessagesService {
     ]);
   }
 
-  async messageCreated({ chatId }: MessageCreatedArgs) {
-    // this command will throw a (404) NotFoundException in findOne() method, if the Chat
-    // room with chatId is not belong to the userId from the context
-    await this.chatsRepository.findOne({
-      _id: chatId,
-      // ...this.chatsService.userChatFilter(userId),
-    });
-    //topic name for this specific message type
-    //which message go to which subscription by the trigger name
+  async messageCreated() {
     return this.pubSub.asyncIterator(MESSAGE_CREATED_TOPIC);
   }
 }

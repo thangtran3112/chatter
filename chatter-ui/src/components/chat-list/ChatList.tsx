@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react';
 import ChatListAdd from './chat-list-add/ChatListAdd';
 import { useGetChats } from '../../hooks/useGetChats';
 import { usePath } from '../../hooks/usePath';
+import { useMessageCreated } from '../../hooks/useMessageCreated';
 
 export default function ChatList() {
   const [chatListAddVisible, setChatListAddVisible] = useState(false);
@@ -14,6 +15,8 @@ export default function ChatList() {
   const [selectedChatId, setSelectedChatId] = useState('');
   //we could use useLocation, but we are outside of <Router>
   const { path } = usePath();
+
+  useMessageCreated({ chatIds: data?.chats.map((chat) => chat._id) || [] });
 
   /**
    * Every time the path is changed, we are setting the selectedChatId from path
@@ -44,15 +47,26 @@ export default function ChatList() {
             overflow: 'auto', //scrollable through the overflow list
           }}
         >
-          {data?.chats
-            .map((chat) => (
-              <ChatListItem
-                selected={chat._id === selectedChatId}
-                chat={chat}
-                key={chat._id}
-              />
-            ))
-            .reverse()}
+          {data?.chats &&
+            [...data.chats]
+              .sort((a, b) => {
+                if (!a.latestMessage) {
+                  return -1;
+                } else {
+                  return (
+                    new Date(a.latestMessage?.createdAt).getTime() -
+                    new Date(b?.latestMessage?.createdAt).getTime()
+                  );
+                }
+              })
+              .map((chat) => (
+                <ChatListItem
+                  selected={chat._id === selectedChatId}
+                  chat={chat}
+                  key={chat._id}
+                />
+              ))
+              .reverse()}
           {/* reverse to make sure newest Chat show up on top */}
         </List>
       </Stack>

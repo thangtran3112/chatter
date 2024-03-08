@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Args, Mutation, Query, Resolver, Subscription } from '@nestjs/graphql';
 import { MessagesService } from './messages.service';
 import { Message } from './entities/message.entity';
@@ -30,12 +31,36 @@ export class MessagesResolver {
     return this.messagesService.getMessages(getMessagesArgs);
   }
 
+  @Subscription(() => Message, {
+    //filter for corresponding messages
+    filter: (payload, variables: MessageCreatedArgs, context) => {
+      //subscriber userId, when the websocket connection is initialized
+      //Reference: onConnect() in GraphQLModule from app.module.ts
+      const subscriberUserId = context.req.user._id;
+      const message: Message = payload.messageCreated;
+      const senderUserId = message.user._id.toHexString(); //convert ObjectId type to string
+      const isSubscriberNotSender = subscriberUserId !== senderUserId;
+
+      return (
+        variables.chatIds.includes(message.chatId) && isSubscriberNotSender
+      );
+    },
+  })
+  messageCreated(
+    @Args() _messageCreatedArgs: MessageCreatedArgs,
+    //passing from getCurrentUserByContext() in current-user.decorator.ts,
+    //and modified by onConnect() in GraphQLModule of app.module.ts
+  ) {
+    return this.messagesService.messageCreated();
+  }
+
   /**
    *
    * @param variables (variables {chatId} is sent from the UI to subscribe to a Chat room)
    * @param payload is the incomming message that needs to be filter to send to subscribers
    * @param context which we extract the user from JWT token. See app.module.ts => GraphQLModule
    */
+  /*
   @Subscription(() => Message, {
     //filter for corresponding messages
     filter: (payload, variables, context) => {
@@ -57,5 +82,5 @@ export class MessagesResolver {
     //and modified by onConnect() in GraphQLModule of app.module.ts
   ) {
     return this.messagesService.messageCreated(messageCreatedArgs);
-  }
+  }*/
 }
