@@ -3,6 +3,7 @@ import { CreateChatInput } from './dto/create-chat.input';
 import { UpdateChatInput } from './dto/update-chat.input';
 import { ChatsRepository } from './chats.repository';
 import { PipelineStage, Types } from 'mongoose';
+import { USERS_TABLE } from 'src/common/constants/database';
 
 @Injectable()
 export class ChatsService {
@@ -23,7 +24,7 @@ export class ChatsService {
       { $unset: 'messages' }, //get rid of all messages
       {
         $lookup: {
-          from: 'users',
+          from: USERS_TABLE,
           localField: 'latestMessage.userId',
           foreignField: '_id',
           as: 'latestMessage.user',

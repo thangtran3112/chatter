@@ -10,6 +10,7 @@ import { MESSAGE_CREATED_TOPIC } from './constants/pubsub';
 import { MessageCreatedArgs } from './dto/message-created.args';
 import { MessageDocument } from './entities/message.document';
 import { UsersService } from 'src/users/users.service';
+import { USERS_TABLE, USER_ID } from 'src/common/constants/database';
 
 @Injectable()
 export class MessagesService {
@@ -61,14 +62,14 @@ export class MessagesService {
       { $replaceRoot: { newRoot: '$messages' } },
       {
         $lookup: {
-          from: 'users', // users collection
-          localField: 'userId',
+          from: USERS_TABLE, // users collection
+          localField: USER_ID,
           foreignField: '_id', //field in the 'users' collection, which is correspond to  in previous 'userId'
           as: 'user', //transform to 'user' on this message. Lookup operator set this as array by default
         },
       },
       { $unwind: '$user' }, //unwind the output array from 'lookup' to User object
-      { $unset: 'userId' }, //remove userId attribute from 'user' as it is not needed
+      { $unset: USER_ID }, //remove userId attribute from 'user' as it is not needed
       { $set: { chatId } }, //attach chatId to this message document, as to make it become message.entity form
     ]);
   }
