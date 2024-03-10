@@ -24,12 +24,14 @@ https://www.mongodb.com/docs/manual/tutorial/install-mongodb-on-os-x/
   - Normally MongoDb will be started on 127.0.0.1:27017
   - Connection string should be `mongodb://127.0.0.1:27017/chatter`
 
-## Installing NestJs GraphQL
+  - How to use [MongoDB Model](https://mongoosejs.com/docs/api/model.html)
+  - How to use [MongoDb method](https://www.mongodb.com/docs/manual/reference/method/)
+  - [MongoDB aggregate commands](https://www.mongodb.com/docs/manual/reference/operator/aggregation/sort/)
 
-https://www.udemy.com/course/build-a-real-time-chat-app-with-react-nestjs-graphql/learn/lecture/39410136#overview
+## NestJs GraphQL
 
-`npm i @nestjs/graphql @nestjs/apollo @apollo/server graphql`
-
+- Installing: `npm i @nestjs/graphql @nestjs/apollo @apollo/server graphql`
+- Playground GraphQL server, after starting backend: `http://localhost:3001/graphql`
 - Understand NestJS GraphQL:
   https://docs.nestjs.com/graphql/quick-start
 
@@ -37,8 +39,6 @@ https://www.udemy.com/course/build-a-real-time-chat-app-with-react-nestjs-graphq
 
 `nest g resource users`
 `nest g resource chats/messages`
-
-- Check the new GraphQL local UI interface at http://localhost:3000/graphql
 
 ### Running MongoDB Compass to view the MongoDB
 

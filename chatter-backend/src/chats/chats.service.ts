@@ -1,9 +1,11 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateChatInput } from './dto/create-chat.input';
 import { UpdateChatInput } from './dto/update-chat.input';
 import { ChatsRepository } from './chats.repository';
 import { PipelineStage, Types } from 'mongoose';
 import { USERS_TABLE } from 'src/common/constants/database';
+import { PaginationArgs } from 'src/common/dto/pagination-args.dto';
 
 @Injectable()
 export class ChatsService {
@@ -17,10 +19,30 @@ export class ChatsService {
     });
   }
 
-  async findMany(prePipelineStages: PipelineStage[] = []) {
+  async findMany(
+    prePipelineStages: PipelineStage[] = [],
+    paginationArgs?: PaginationArgs,
+  ) {
     const chats = await this.chatsRepository.model.aggregate([
       ...prePipelineStages,
-      { $set: { latestMessage: { $arrayElemAt: ['$messages', -1] } } }, //-1 means last element
+      {
+        $set: {
+          latestMessage: {
+            //only get the latestMessage, if the Chat actually has messages defined
+            $cond: [
+              '$messages',
+              { $arrayElemAt: ['$messages', -1] }, //-1 means last element
+              {
+                //if the Chat has no messages, set the createdAt attribute of lastest Message to now
+                createdAt: new Date(),
+              },
+            ],
+          },
+        },
+      },
+      { $sort: { 'latestMessage.createdAt': -1 } }, //sort all chats based on its latest message, -1 for descending
+      { $skip: paginationArgs?.skip }, //skip the N number of documents that we specify
+      { $limit: paginationArgs?.limit }, //the pageSize or the number of documents we will retrive after skipping N documents
       { $unset: 'messages' }, //get rid of all messages
       {
         $lookup: {
@@ -61,6 +83,11 @@ export class ChatsService {
 
   async remove(id: number) {
     return `This action removes a #${id} chat`;
+  }
+
+  async countChats() {
+    //this used to be this.chatsRepository.model.count()
+    return this.chatsRepository.model.countDocuments({});
   }
 
   /**

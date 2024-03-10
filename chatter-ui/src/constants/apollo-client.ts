@@ -44,7 +44,30 @@ const splitLink = split(
 );
 
 const client = new ApolloClient({
-  cache: new InMemoryCache(),
+  cache: new InMemoryCache({
+    typePolicies: {
+      Query: {
+        fields: {
+          chats: {
+            //cache does not consider keys or args such { skip, limit }.
+            //Do not cache separate caches based on fields and args
+            keyArgs: false,
+            //merge incoming data to existing cache
+            //existing: array of existing chats, incoming: array of incoming ($limit) chats from query with (skip, limit)
+            merge: (existing, incoming, { args }: any) => {
+              //make a copy of our existing cache, since Apollo cache is immutable
+              const merged = existing ? existing.slice(0) : [];
+              //loop through the incoming chats, and merge the new chat to merged array
+              for (let i = 0; i < incoming.length; ++i) {
+                merged[args.skip + i] = incoming[i];
+              }
+              return merged;
+            },
+          },
+        },
+      },
+    },
+  }),
   link: logoutLink.concat(splitLink),
 });
 
