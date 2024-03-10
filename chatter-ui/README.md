@@ -59,3 +59,8 @@ https://dev.to/quizzes4u/how-to-set-up-eslint-and-prettier-in-react-typescript-5
 
 - [useReactiveVar() hook and makeVar()](https://www.apollographql.com/docs/react/local-state/reactive-variables/)
 - Mutation will not trigger cache update on non-primitive response. We can either use `refetchQueries` or `update` cache on successful mutation. [Instructions](https://www.apollographql.com/docs/react/data/mutations/)
+
+## React infinite scroller
+
+- `npm i react-infinite-scroller` to help scrolling for Chat component
+- `npm i -save-dev @types/react-infinite-scroller`
