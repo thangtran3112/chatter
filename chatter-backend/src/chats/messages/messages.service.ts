@@ -7,7 +7,6 @@ import { GetMessagesArgs } from './dto/get-messages.args';
 import { PUB_SUB } from 'src/common/constants/injection-tokens';
 import { PubSub } from 'graphql-subscriptions';
 import { MESSAGE_CREATED_TOPIC } from './constants/pubsub';
-import { MessageCreatedArgs } from './dto/message-created.args';
 import { MessageDocument } from './entities/message.document';
 import { UsersService } from 'src/users/users.service';
 import { USERS_TABLE, USER_ID } from 'src/common/constants/database';
@@ -54,12 +53,24 @@ export class MessagesService {
     return message;
   }
 
+  async countMessages(chatId: string) {
+    const res = await this.chatsRepository.model.aggregate([
+      { $match: { _id: new Types.ObjectId(chatId) } },
+      { $unwind: '$messages' }, // breaking each message to create array of {chatId, single message}
+      { $count: 'messages' }, //return example: { "messages" : 4 }
+    ]);
+    return res[0]; //can also be res.messages
+  }
+
   //After the Mongo aggregation pipeline, we obtains the array of Message with the shape from message.entity
-  async getMessages({ chatId }: GetMessagesArgs) {
+  async getMessages({ chatId, skip, limit }: GetMessagesArgs) {
     return this.chatsRepository.model.aggregate([
       { $match: { _id: new Types.ObjectId(chatId) } }, //first step: get the Chat
       { $unwind: '$messages' }, //unpack all messages (property of Chat Document), to individual messages
       { $replaceRoot: { newRoot: '$messages' } },
+      { $sort: { createdAt: -1 } },
+      { $skip: skip },
+      { $limit: limit },
       {
         $lookup: {
           from: USERS_TABLE, // users collection

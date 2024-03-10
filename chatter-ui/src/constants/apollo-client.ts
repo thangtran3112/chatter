@@ -49,20 +49,19 @@ const client = new ApolloClient({
       Query: {
         fields: {
           chats: {
-            //cache does not consider keys or args such { skip, limit }.
+            //Ignore args such as { skip, limit }
             //Do not cache separate caches based on fields and args
             keyArgs: false,
             //merge incoming data to existing cache
             //existing: array of existing chats, incoming: array of incoming ($limit) chats from query with (skip, limit)
-            merge: (existing, incoming, { args }: any) => {
-              //make a copy of our existing cache, since Apollo cache is immutable
-              const merged = existing ? existing.slice(0) : [];
-              //loop through the incoming chats, and merge the new chat to merged array
-              for (let i = 0; i < incoming.length; ++i) {
-                merged[args.skip + i] = incoming[i];
-              }
-              return merged;
-            },
+            merge: mergeFn,
+          },
+          messages: {
+            //Caches are separated and isolated by chatId
+            //When new messages coming from new pagination getMessages(chatId, skip, limit),
+            //We will do the merging based on chatId
+            keyArgs: ['chatId'],
+            merge: mergeFn,
           },
         },
       },
@@ -70,5 +69,15 @@ const client = new ApolloClient({
   }),
   link: logoutLink.concat(splitLink),
 });
+
+function mergeFn(existing: any, incoming: any, { args }: any) {
+  //make a copy of our existing cache, since Apollo cache is immutable
+  const merged = existing ? existing.slice(0) : [];
+  //loop through the incoming chats, and merge the new chat to merged array
+  for (let i = 0; i < incoming.length; ++i) {
+    merged[args.skip + i] = incoming[i];
+  }
+  return merged;
+}
 
 export default client;
