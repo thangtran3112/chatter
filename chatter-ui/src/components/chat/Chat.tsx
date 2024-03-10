@@ -15,6 +15,9 @@ import SendIcon from '@mui/icons-material/Send';
 import { useCreateMessage } from '../../hooks/useCreateMessage';
 import { useEffect, useRef, useState } from 'react';
 import { useGetMessages } from '../../hooks/useGetMessages';
+import { PAGE_SIZE } from '../../constants/page-size';
+import { useCountMessages } from '../../hooks/useCountMessages';
+import InfiniteScroll from 'react-infinite-scroller';
 
 const chat = () => {
   const params = useParams();
@@ -22,9 +25,20 @@ const chat = () => {
   const chatId = params._id!;
   const { data } = useGetChat({ _id: chatId });
   const [createMessage] = useCreateMessage();
-  const { data: allMessages } = useGetMessages({ chatId });
+  const { data: allMessages, fetchMore } = useGetMessages({
+    chatId,
+    skip: 0,
+    limit: PAGE_SIZE,
+  });
   const divRef = useRef<HTMLDivElement | null>(null);
   const location = useLocation();
+  const { messagesCount, countMessagesQuery } = useCountMessages(chatId);
+
+  //everytime the chatId changes, countMessagesQuery function will change,
+  //as of useCallback() inside useCountMessages() hook.
+  useEffect(() => {
+    countMessagesQuery();
+  }, [countMessagesQuery]);
 
   // console.log(latestMessage);
 
@@ -43,9 +57,13 @@ const chat = () => {
   //whenever we Load a Chat, the Url will change with the new ChatId,
   //or when the messages list are changed (someone send us a message)
   //we want to scroll down to the bottom, to see the latest message
+  //we do not want this effect, when user is scrolling up
   useEffect(() => {
-    setMessage('');
-    scrollToBottom();
+    if (allMessages?.messages && allMessages.messages.length <= PAGE_SIZE) {
+      //When user first clicks on a Chat
+      setMessage('');
+      scrollToBottom();
+    }
   }, [location, allMessages]);
 
   const handleSendMessage = async () => {
@@ -66,45 +84,60 @@ const chat = () => {
       <h1>{data?.chat.name}</h1>
       {/* The Chat will have 70/100 view height, and scrollable if overflow */}
       <Box sx={{ maxHeight: '70vh', overflow: 'auto' }}>
-        {allMessages &&
-          [...allMessages.messages]
-            .sort(
-              (messageA, messageB) =>
-                new Date(messageA.createdAt).getTime() -
-                new Date(messageB.createdAt).getTime(),
-            ) //sorting all messages based on timestamp
-            .map((curMessage) => (
-              <Grid
-                key={curMessage._id}
-                container
-                alignItems="center"
-                marginBottom="1rem"
-              >
-                {/* Using 3 collumns for small screen, 1 collumn for medium screen */}
-                <Grid item xs={2} lg={1}>
-                  <Avatar src="" sx={{ width: 52, height: 52 }}></Avatar>
-                </Grid>
+        <InfiniteScroll
+          pageStart={0}
+          isReverse={true}
+          loadMore={() =>
+            fetchMore({ variables: { skip: allMessages?.messages.length } })
+          }
+          hasMore={
+            allMessages && messagesCount
+              ? allMessages.messages.length < messagesCount
+              : false
+          }
+          useWindow={false}
+        >
+          {allMessages &&
+            [...allMessages.messages]
+              .sort(
+                (messageA, messageB) =>
+                  new Date(messageA.createdAt).getTime() -
+                  new Date(messageB.createdAt).getTime(),
+              ) //sorting all messages based on timestamp
+              .map((curMessage) => (
+                <Grid
+                  key={curMessage._id}
+                  container
+                  alignItems="center"
+                  marginBottom="1rem"
+                >
+                  {/* Using 3 collumns for small screen, 1 collumn for medium screen */}
+                  <Grid item xs={2} lg={1}>
+                    <Avatar src="" sx={{ width: 52, height: 52 }}></Avatar>
+                  </Grid>
 
-                <Grid item xs={10} lg={11}>
-                  <Stack>
-                    {/* Using <Paper> to hold Chat content for some elevation */}
-                    <Paper sx={{ width: 'fit-content' }}>
-                      <Typography sx={{ padding: '0.9rem' }}>
-                        {curMessage.content}
+                  <Grid item xs={10} lg={11}>
+                    <Stack>
+                      {/* Using <Paper> to hold Chat content for some elevation */}
+                      <Paper sx={{ width: 'fit-content' }}>
+                        <Typography sx={{ padding: '0.9rem' }}>
+                          {curMessage.content}
+                        </Typography>
+                      </Paper>
+                      {/* Timestamp */}
+                      <Typography
+                        variant="caption"
+                        sx={{ marginLeft: '0.25rem' }}
+                      >
+                        {new Date(curMessage.createdAt).toLocaleTimeString()} -{' '}
+                        {new Date(curMessage.createdAt).toLocaleDateString()}
                       </Typography>
-                    </Paper>
-                    {/* Timestamp */}
-                    <Typography
-                      variant="caption"
-                      sx={{ marginLeft: '0.25rem' }}
-                    >
-                      {new Date(curMessage.createdAt).toLocaleTimeString()}
-                    </Typography>
-                  </Stack>
+                    </Stack>
+                  </Grid>
                 </Grid>
-              </Grid>
-            ))}
-        <div ref={divRef}></div>
+              ))}
+          <div ref={divRef}></div>
+        </InfiniteScroll>
       </Box>
       <Paper
         sx={{
