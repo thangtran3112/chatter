@@ -1,5 +1,6 @@
 ## Install nest config and Mongo DB connection:
 
+NodeJS v20X
 `npm i @nestjs/config @nestjs/mongoose mongoose`
 
 ### Schema validation:
