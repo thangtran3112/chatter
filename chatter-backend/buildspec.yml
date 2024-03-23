@@ -9,11 +9,11 @@ phases:
   pre_build:
     commands:
       - echo "Pre-Build Phase start ..."
-      - npm install
+      - cd chatter-backend && npm install
   build:
     commands:
       - echo "Building Phase start ..."
-      - npm run build
+      - cd chatter-backend && npm run build
 
 artifacts:
   files:
