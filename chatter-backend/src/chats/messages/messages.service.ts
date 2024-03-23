@@ -64,7 +64,7 @@ export class MessagesService {
 
   //After the Mongo aggregation pipeline, we obtains the array of Message with the shape from message.entity
   async getMessages({ chatId, skip, limit }: GetMessagesArgs) {
-    return this.chatsRepository.model.aggregate([
+    const messages = await this.chatsRepository.model.aggregate([
       { $match: { _id: new Types.ObjectId(chatId) } }, //first step: get the Chat
       { $unwind: '$messages' }, //unpack all messages (property of Chat Document), to individual messages
       { $replaceRoot: { newRoot: '$messages' } },
@@ -83,6 +83,12 @@ export class MessagesService {
       { $unset: USER_ID }, //remove userId attribute from 'user' as it is not needed
       { $set: { chatId } }, //attach chatId to this message document, as to make it become message.entity form
     ]);
+
+    for (const message of messages) {
+      message.user = this.usersService.toEntity(message.user);
+    }
+
+    return messages;
   }
 
   async messageCreated() {
