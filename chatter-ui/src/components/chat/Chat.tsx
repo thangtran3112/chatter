@@ -113,7 +113,19 @@ const chat = () => {
                 >
                   {/* Using 3 collumns for small screen, 1 collumn for medium screen */}
                   <Grid item xs={2} lg={1}>
-                    <Avatar src="" sx={{ width: 52, height: 52 }}></Avatar>
+                    <Stack
+                      alignItems="center"
+                      justifyContent="center"
+                      spacing={1}
+                    >
+                      <Avatar
+                        src={curMessage.user.imageUrl}
+                        sx={{ width: 52, height: 52 }}
+                      />
+                      <Typography variant="caption">
+                        {curMessage.user.username}
+                      </Typography>
+                    </Stack>
                   </Grid>
 
                   <Grid item xs={10} lg={11}>
