@@ -148,6 +148,7 @@ export type User = {
   __typename?: 'User';
   _id: Scalars['ID']['output'];
   email: Scalars['String']['output'];
+  imageUrl: Scalars['String']['output'];
   username: Scalars['String']['output'];
 };
 
