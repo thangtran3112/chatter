@@ -1,0 +1,20 @@
+version: 0.2
+phases:
+  install:
+    runtime-versions:
+      nodejs: 20
+    commands:
+      - echo "Entering Installation Phase. No installation actions configured."
+      - echo "We can setup global npm packages here if needed."
+  pre-build:
+    commands:
+      - echo "Pre-Build Phase start ..."
+      - npm install
+  build:
+    commands:
+      - echo "Building Phase start ..."
+      - npm run build
+
+  artifacts:
+    files:
+      - '**/*'

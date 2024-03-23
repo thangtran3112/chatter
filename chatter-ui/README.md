@@ -1,6 +1,7 @@
 ## Install required Material UI libraries
 
-`yarn add @mui/material @emotion/react @emotion/styled @fontsource/roboto @mui/icons-materi
+NodeJS v20X
+`npm i --save @mui/material @emotion/react @emotion/styled @fontsource/roboto @mui/icons-materi
 al`
 
 ## Install eslint for typescript
