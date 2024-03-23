@@ -6,7 +6,7 @@ phases:
     commands:
       - echo "Entering Installation Phase. No installation actions configured."
       - echo "We can setup global npm packages here if needed."
-  pre-build:
+  pre_build:
     commands:
       - echo "Pre-Build Phase start ..."
       - npm install
