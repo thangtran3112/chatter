@@ -6,14 +6,15 @@ phases:
     commands:
       - echo "Entering Installation Phase. No installation actions configured."
       - echo "We can setup global npm packages here if needed."
+      - cd chatter-backend
   pre_build:
     commands:
       - echo "Pre-Build Phase start ..."
-      - cd chatter-backend && npm install
+      - npm install
   build:
     commands:
       - echo "Building Phase start ..."
-      - cd chatter-backend && npm run build
+      - npm run build
 
 artifacts:
   files:
